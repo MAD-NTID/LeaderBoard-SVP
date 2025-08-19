@@ -8,6 +8,28 @@ Purpose:
 
 import datetime
 import random
+import requests
+
+
+base_url = "http://localhost/leaderboard/api"
+
+def send_request(endpoint, payload):
+    uri = f"{base_url}/{endpoint}"
+    response = requests.post(uri, json=payload)
+
+    return response.json()
+
+
+
+def register_client(client_id):
+    endpoint = "/add_player.php"
+    payload = {
+        "name": client_id
+    }
+
+    return send_request(endpoint, payload)
+
+
 
 #PREDEFINED
 """
@@ -100,6 +122,7 @@ def main():
     total_player_score = 0
     total_computer_xp = 0
     total_player_xp = 0
+    print(register_client("kscics3"))
     while True:
         #STUDENT CODE HERE
         game_header()
