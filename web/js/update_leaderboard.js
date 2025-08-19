@@ -14,15 +14,9 @@ function updateLeaderboardTable(data) {
         <td>${player.matches}</td>
         <td>
             ${player.wins}
-            <button class="btn btn-sm btn-success ms-2" onclick="updateStat(${
-              player.id
-            }, 'wins')">+</button>
         </td>
         <td>
             ${player.losses}
-            <button class="btn btn-sm btn-danger ms-2" onclick="updateStat(${
-              player.id
-            }, 'losses')">+</button>
         </td>
         <td>${player.ratio}</td>
         `;

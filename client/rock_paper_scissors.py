@@ -9,18 +9,30 @@ Purpose:
 import datetime
 import random
 import requests
+from tqdm import tqdm
+import time
 
 
 base_url = "http://localhost/leaderboard/api"
 
-def send_request(endpoint, payload):
+def send_request(endpoint, payload, method='POST'):
     uri = f"{base_url}/{endpoint}"
-    response = requests.post(uri, json=payload)
+    if method.upper() == 'GET':
+        response = requests.get(uri, params=payload)
+    else:
+        response = requests.post(uri, json=payload)
 
     return response.json()
 
 
 
+"""
+    This function will register a client with the server.
+    If the client is a new client then it will add a new row in the database
+    If the client already exists then it will return the existing client id
+    
+    The server returns a json with success and if if all goes well
+"""
 def register_client(client_id):
     endpoint = "/add_player.php"
     payload = {
@@ -28,6 +40,40 @@ def register_client(client_id):
     }
 
     return send_request(endpoint, payload)
+
+
+def update_stat(id, type):
+    endpoint = "/update_stat.php"
+    payload = {
+        "id": id,
+        "field": type
+    }
+
+    return send_request(endpoint, payload)
+
+
+def update_win(id):
+    return update_stat(id, "wins")
+
+def update_losses(id):
+    return update_stat(id, "losses")
+
+
+#SVP CODES HERE - Challenges
+
+def get_current_position_on_leaderboard(id):
+    endpoint = "/get_leaderboard.php"
+    payload = {
+        "id": id,
+        "limit": 100
+    }
+
+    response = send_request(endpoint, payload, method='GET')
+    response = response[0]
+
+    return response["rank"]
+
+#End of SVP CODES HERE - Challenges 
 
 
 
@@ -70,7 +116,15 @@ def generate_xp(round):
     This will return one of the following, "rock", "paper" or "scissor"
 """
 def get_computer_choice():
-    choices = ["rock", "paper", "scissor"]
+    #SVP CODES HERE to simulate computer thinking with tqdm - Challenges
+    print("Computer is thinking...")
+    for _ in tqdm(range(20), desc="🤖 Choosing movess"):
+        time.sleep(0.05)  # small delay to simulate thinking
+    print("Computer has made a choice!")
+    print("Computer's choice won't be revealed until you make your pick...")
+    time.sleep(1)
+    #End of SVP CODES HERE
+    choices = ["rock", "paper", "scissors"]
     return random.choice(choices)
 
 
@@ -81,11 +135,11 @@ def determine_winner(player_choice, computer_choice):
     winner = "Computer wins!"
     if player_choice == computer_choice:
         winner = "It's a tie!"
-    elif player_choice == "rock" and computer_choice == "scissor":
+    elif player_choice == "rock" and computer_choice == "scissors":
         winner = player
     elif player_choice == "paper" and computer_choice == "rock":
         winner = player
-    elif player_choice == "scissor" and computer_choice == "paper":
+    elif player_choice == "scissors" and computer_choice == "paper":
         winner = player
     
     return winner
@@ -101,9 +155,9 @@ def quit():
 
 def get_user_choice():
     while True:
-        choice = input("Enter your choice(rock, paper, scissor):")
+        choice = input("Enter your choice(rock, paper, scissors):")
         choice = choice.lower()
-        if choice!="rock" and choice!="scissor" and choice!="paper":
+        if choice!="rock" and choice!="scissors" and choice!="paper":
             print("Invalid choice!")
             continue
         return choice
@@ -122,10 +176,30 @@ def main():
     total_player_score = 0
     total_computer_xp = 0
     total_player_xp = 0
-    print(register_client("kscics3"))
+    client_id = ""
+
+    #SVP CODES HERE
+    username = input("Enter your RIT username:")
+    server_response = register_client(username)
+    if not server_response["success"]:
+        print("Error registering client:", server_response["error"])
+        exit(0)
+    else:
+        client_id = server_response["id"]
+        print("Client registered successfully with id:", client_id)
+    
+    #End of SVP CODES HERE
+
+    
+
+    
     while True:
         #STUDENT CODE HERE
         game_header()
+                #SVP CODES HERE - Challenges
+        rank = get_current_position_on_leaderboard(client_id)
+        print("\nCurrent rank on leaderboard:", rank)
+        #End of SVP CODES HERE - Challenges
         print("Previous round result\n============")
         print("Previous computer choice:",computer_choice)
         print("Previous user's choice:", user_choice)
@@ -136,6 +210,9 @@ def main():
         print("Total computer XP:", total_computer_xp)
         print("\nTotal player score:", total_player_score)
         print("Total player xp:", total_player_xp)
+
+
+
         
         
         
@@ -147,9 +224,15 @@ def main():
         if winner == "Player Wins":
             total_player_score +=1
             total_player_xp+=xp
+            #SVP CODES HERE
+            update_win(client_id)
+            #End of SVP CODES HERE
         elif winner == "Computer wins!":
             total_computer_score+=1
-            total_computer_xp +=1
+            total_computer_xp +=xp
+            #SVP CODES HERE
+            update_losses(client_id)
+            #End of SVP CODES HERE
         
         print(f"You:{user_choice} vs Computer:{computer_choice}")
         print("Winner:", winner)
@@ -162,7 +245,6 @@ def main():
             break
         
         
-
 
 #PREDEFINED
 main()

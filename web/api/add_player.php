@@ -24,8 +24,17 @@ try {
 
 } catch (PDOException $e) {
     if ($e->errorInfo[1] == 1062) { // Duplicate entry
-        http_response_code(409);
-        echo json_encode(['error' => 'Player name must be unique']);
+
+        //if the player exists, return existing id
+        $stmt = $pdo->prepare("SELECT id FROM leaderboard WHERE name = :name");
+        $stmt->execute([':name' => $name]);
+        $player = $stmt->fetch(PDO::FETCH_ASSOC);
+        if ($player) {
+            echo json_encode(['success' => true, 'id' => $player['id']]);
+        } else {
+            http_response_code(500);
+            echo json_encode(['error' => 'Failed to retrieve player ID']);
+        }
     } else {
         http_response_code(500);
         echo json_encode(['error' => 'Server error']);
