@@ -61,16 +61,7 @@ def update_losses(id):
 
 #SVP CODES HERE - Challenges
 def get_current_position_on_leaderboard(id):
-    endpoint = "/get_leaderboard.php"
-    payload = {
-        "id": id,
-        "limit": 100
-    }
-
-    response = send_request(endpoint, payload, method='GET')
-    response = response[0]
-
-    return response["rank"]
+    pass # DELETE ME IF YOU ARE ATTEMPTING THE CHALLENGE
 #End of SVP CODES HERE - Challenges 
 
 
@@ -116,9 +107,9 @@ def get_computer_choice():
     #SVP CODES HERE to simulate computer thinking with tqdm - Challenges
     print("Computer is thinking...")
     
-    # for _ in tqdm(range(20), desc="🤖 Choosing moves"):
-    #     time.sleep(0.05)  # small delay to simulate thinking
-    
+    # CODE THE CHALLENGE HERE
+    # ... 
+
     print("Computer has made a choice!")
     print("Computer's choice will not be revealed until you make your pick...")
     time.sleep(1)
@@ -180,8 +171,7 @@ def main():
     server_response = dict()
 
     #SVP CODES HERE
-    username = input("Enter your RIT username: ")
-    server_response = register_client(username)
+    # ...
     #END SVP CODES
 
     # API should always return dict with "success"
@@ -197,8 +187,8 @@ def main():
         game_header()
         
         #SVP CODES HERE - Challenges
-        rank = get_current_position_on_leaderboard(client_id)
-        print("\nCurrent rank on leaderboard:", rank)
+        # CODE THE CHALLENGE HERE
+        # ...
         #End of SVP CODES HERE - Challenges
 
         print("Previous round result\n============")
@@ -221,13 +211,13 @@ def main():
             total_player_score += 1
             total_player_xp += xp
             #SVP CODES HERE
-            update_win(client_id)
+            # ...
             #End of SVP CODES HERE
         elif winner == "Computer wins!":
             total_computer_score += 1
             total_computer_xp += xp
             #SVP CODES HERE
-            update_losses(client_id)
+            # ...
             #End of SVP CODES HERE
         
         print(f"You: {user_choice} vs Computer: {computer_choice}")
