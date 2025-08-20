@@ -68,8 +68,8 @@ def get_current_position_on_leaderboard(id):
     }
 
     response = send_request(endpoint, payload, method='GET')
+    
     response = response[0]
-
     return response["rank"]
 #End of SVP CODES HERE - Challenges 
 
@@ -116,8 +116,8 @@ def get_computer_choice():
     #SVP CODES HERE to simulate computer thinking with tqdm - Challenges
     print("Computer is thinking...")
     
-    # for _ in tqdm(range(20), desc="🤖 Choosing moves"):
-    #     time.sleep(0.05)  # small delay to simulate thinking
+    for _ in tqdm(range(20), desc="🤖 Choosing moves"):
+        time.sleep(0.05)  # small delay to simulate thinking
     
     print("Computer has made a choice!")
     print("Computer's choice will not be revealed until you make your pick...")
