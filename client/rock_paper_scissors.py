@@ -13,17 +13,16 @@ from tqdm import tqdm
 import time
 
 
-base_url = "http://localhost/leaderboard/api"
+base_url = "http://localhost/leaderboard-svp/web/api"
 
 def send_request(endpoint, payload, method='POST'):
-    uri = f"{base_url}/{endpoint}"
+    uri = f"{base_url}{endpoint}"
     if method.upper() == 'GET':
         response = requests.get(uri, params=payload)
     else:
         response = requests.post(uri, json=payload)
 
     return response.json()
-
 
 
 """
@@ -55,12 +54,12 @@ def update_stat(id, type):
 def update_win(id):
     return update_stat(id, "wins")
 
+
 def update_losses(id):
     return update_stat(id, "losses")
 
 
 #SVP CODES HERE - Challenges
-
 def get_current_position_on_leaderboard(id):
     endpoint = "/get_leaderboard.php"
     payload = {
@@ -72,9 +71,7 @@ def get_current_position_on_leaderboard(id):
     response = response[0]
 
     return response["rank"]
-
 #End of SVP CODES HERE - Challenges 
-
 
 
 #PREDEFINED
@@ -118,12 +115,15 @@ def generate_xp(round):
 def get_computer_choice():
     #SVP CODES HERE to simulate computer thinking with tqdm - Challenges
     print("Computer is thinking...")
+    
     for _ in tqdm(range(20), desc="🤖 Choosing movess"):
         time.sleep(0.05)  # small delay to simulate thinking
+    
     print("Computer has made a choice!")
-    print("Computer's choice won't be revealed until you make your pick...")
+    print("Computer's choice will not be revealed until you make your pick...")
     time.sleep(1)
     #End of SVP CODES HERE
+
     choices = ["rock", "paper", "scissors"]
     return random.choice(choices)
 
@@ -144,25 +144,25 @@ def determine_winner(player_choice, computer_choice):
     
     return winner
 
+
 def quit():
     while True:
-        choice = input("Play again? (yes/quit):").lower()
-        if choice!="quit" and choice!="yes":
-            print("Invalid!")
-            continue
-        return choice
-    
+        choice = input('Press "Enter" to play again or type "quit": ').strip().lower()
+        if choice == "quit":
+            return "quit"
+        if choice == "":
+            return "yes"
+        print("Invalid!")
+
 
 def get_user_choice():
     while True:
-        choice = input("Enter your choice(rock, paper, scissors):")
+        choice = input("Enter your choice(rock, paper, scissors): ")
         choice = choice.lower()
-        if choice!="rock" and choice!="scissors" and choice!="paper":
+        if choice !="rock" and choice !="scissors" and choice !="paper":
             print("Invalid choice!")
             continue
         return choice
-
-
 
 
 #PREDEFINED
@@ -179,26 +179,27 @@ def main():
     client_id = ""
 
     #SVP CODES HERE
-    username = input("Enter your RIT username:")
+    username = input("Enter your RIT username: ")
     server_response = register_client(username)
-    if not server_response["success"]:
-        print("Error registering client:", server_response["error"])
-        exit(0)
-    else:
-        client_id = server_response["id"]
-        print("Client registered successfully with id:", client_id)
-    
-    #End of SVP CODES HERE
 
-    
+    # API should always return dict with "success"
+    if not isinstance(server_response, dict) or not server_response.get("success"):
+        print("Error registering client:", server_response.get("error", server_response))
+        exit(0)
+
+    client_id = server_response["id"]
+    print("Client ready. id:", client_id)
+    #End of SVP CODES HERE   
 
     
     while True:
         #STUDENT CODE HERE
         game_header()
-                #SVP CODES HERE - Challenges
+        
+        #SVP CODES HERE - Challenges
         rank = get_current_position_on_leaderboard(client_id)
         print("\nCurrent rank on leaderboard:", rank)
+        
         #End of SVP CODES HERE - Challenges
         print("Previous round result\n============")
         print("Previous computer choice:",computer_choice)
@@ -211,10 +212,6 @@ def main():
         print("\nTotal player score:", total_player_score)
         print("Total player xp:", total_player_xp)
 
-
-
-        
-        
         
         computer_choice = get_computer_choice()
         user_choice = get_user_choice()
@@ -237,14 +234,13 @@ def main():
         print(f"You:{user_choice} vs Computer:{computer_choice}")
         print("Winner:", winner)
         
-        round+=1
+        round +=1
         
         play_again = quit()
         if play_again == "quit":
             print("Thank you for playing!!! Goodbye...")
             break
         
-        
-
+    
 #PREDEFINED
 main()

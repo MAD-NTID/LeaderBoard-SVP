@@ -5,7 +5,7 @@ let lastLimit = leaderboardLimit;
 async function fetchLeaderboardData() {
   try {
     const response = await fetch(
-      `http://localhost/leaderboard/api/get_leaderboard.php?limit=${leaderboardLimit}`
+      `http://localhost/leaderboard-svp/web/api/get_leaderboard.php?limit=${leaderboardLimit}`
     );
     if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
 

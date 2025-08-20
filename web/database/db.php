@@ -1,20 +1,29 @@
 <?php
-$host = 'localhost';
-$db   = 'leaderboard_db';
-$user = 'root';
-$pass = '';
-$charset = 'utf8mb4';
-
-$dsn = "mysql:host=$host;dbname=$db;charset=$charset";
-$options = [
-    PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
-    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-];
+$host     = "localhost";  
+$dbname   = "leaderboard";
+$username = "root";       
+$password = "";           
+$debug    = true;         
 
 try {
-    $pdo = new PDO($dsn, $user, $pass, $options);
+    $pdo = new PDO(
+        "mysql:host=$host;dbname=$dbname;charset=utf8mb4",
+        $username,
+        $password
+    );
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
 } catch (PDOException $e) {
-    http_response_code(500);
-    echo json_encode(['error' => 'Database connection failed.']);
+    if ($debug) {
+        echo json_encode([
+            "success" => false,
+            "error"   => $e->getMessage()  // full error for debugging
+        ]);
+    } else {
+        echo json_encode([
+            "success" => false,
+            "error"   => "Database connection failed."
+        ]);
+    }
     exit;
 }
