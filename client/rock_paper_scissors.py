@@ -116,8 +116,8 @@ def get_computer_choice():
     #SVP CODES HERE to simulate computer thinking with tqdm - Challenges
     print("Computer is thinking...")
     
-    for _ in tqdm(range(20), desc="🤖 Choosing movess"):
-        time.sleep(0.05)  # small delay to simulate thinking
+    # for _ in tqdm(range(20), desc="🤖 Choosing moves"):
+    #     time.sleep(0.05)  # small delay to simulate thinking
     
     print("Computer has made a choice!")
     print("Computer's choice will not be revealed until you make your pick...")
@@ -177,10 +177,12 @@ def main():
     total_computer_xp = 0
     total_player_xp = 0
     client_id = ""
+    server_response = dict()
 
     #SVP CODES HERE
     username = input("Enter your RIT username: ")
     server_response = register_client(username)
+    #END SVP CODES
 
     # API should always return dict with "success"
     if not isinstance(server_response, dict) or not server_response.get("success"):
@@ -189,8 +191,6 @@ def main():
 
     client_id = server_response["id"]
     print("Client ready. id:", client_id)
-    #End of SVP CODES HERE   
-
     
     while True:
         #STUDENT CODE HERE
@@ -199,8 +199,8 @@ def main():
         #SVP CODES HERE - Challenges
         rank = get_current_position_on_leaderboard(client_id)
         print("\nCurrent rank on leaderboard:", rank)
-        
         #End of SVP CODES HERE - Challenges
+
         print("Previous round result\n============")
         print("Previous computer choice:",computer_choice)
         print("Previous user's choice:", user_choice)
@@ -211,7 +211,6 @@ def main():
         print("Total computer XP:", total_computer_xp)
         print("\nTotal player score:", total_player_score)
         print("Total player xp:", total_player_xp)
-
         
         computer_choice = get_computer_choice()
         user_choice = get_user_choice()
@@ -219,22 +218,22 @@ def main():
         xp = generate_xp(round)
         
         if winner == "Player Wins":
-            total_player_score +=1
-            total_player_xp+=xp
+            total_player_score += 1
+            total_player_xp += xp
             #SVP CODES HERE
             update_win(client_id)
             #End of SVP CODES HERE
         elif winner == "Computer wins!":
-            total_computer_score+=1
-            total_computer_xp +=xp
+            total_computer_score += 1
+            total_computer_xp += xp
             #SVP CODES HERE
             update_losses(client_id)
             #End of SVP CODES HERE
         
-        print(f"You:{user_choice} vs Computer:{computer_choice}")
-        print("Winner:", winner)
+        print(f"You: {user_choice} vs Computer: {computer_choice}")
+        print("Winner: ", winner)
         
-        round +=1
+        round += 1
         
         play_again = quit()
         if play_again == "quit":
