@@ -35,20 +35,23 @@ if ($id) {
 } else {
     // Default leaderboard query
     $sql = "
-      SELECT 
-          id, 
-          name, 
-          matches, 
-          wins, 
-          losses, 
-          CASE 
-              WHEN losses = 0 AND wins > 0 THEN wins
-              WHEN losses = 0 AND wins = 0 THEN 0
-              ELSE ROUND(wins / losses, 2)
-          END AS ratio
-      FROM leaderboard
-      ORDER BY matches DESC, wins DESC
-      LIMIT :limit
+    SELECT 
+        id, 
+        name, 
+        matches, 
+        wins, 
+        losses, 
+        CASE 
+            WHEN losses = 0 AND wins > 0 THEN wins
+            WHEN losses = 0 AND wins = 0 THEN 0
+            ELSE ROUND(wins / losses, 2)
+        END AS ratio
+    FROM leaderboard
+    ORDER BY 
+        wins DESC,
+        losses ASC,
+        matches DESC
+    LIMIT :limit
     ";
     $stmt = $pdo->prepare($sql);
     $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
