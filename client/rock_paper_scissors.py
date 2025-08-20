@@ -61,7 +61,12 @@ def update_losses(id):
 
 #SVP CODES HERE - Challenges
 def get_current_position_on_leaderboard(id):
-    pass # DELETE ME IF YOU ARE ATTEMPTING THE CHALLENGE
+    # CODE THE CHALLENGE HERE
+    # ... 
+    
+    # DO NOT DELETE BELOW
+    response = response[0]
+    return response["rank"]
 #End of SVP CODES HERE - Challenges 
 
 
